@@ -1,15 +1,16 @@
 import pandas as pd
 import numpy as np
-from hyppo.ksample import Energy, MMD
+from scipy.stats import norm
 
 
 chat_id = 487727948 # Ваш chat ID, не меняйте название переменной
 
-def solution(x: np.array, y: np.array) -> bool:
+def solution(p: float, x: np.array) -> tuple:
     # Измените код этой функции
     # Это будет вашим решением
     # Не меняйте название функции и её аргументы
-    p_value = MMD(compute_kernel="rbf", gamma=1).test(x, y)[1]
-
-    # Если p-уровень значимости меньше заданного уровня значимости, отклоняем гипотезу однородности выборок
-    return p_value < 0.01
+    alpha = 1 - p
+    loc = x.mean() + np.sqrt(3*x.var())
+    scale = np.sqrt(np.var(x)) / np.sqrt(len(x))
+    return loc - scale * norm.ppf(1 - alpha / 2), \
+           loc - scale * norm.ppf(alpha / 2)
