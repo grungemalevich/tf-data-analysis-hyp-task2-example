@@ -1,16 +1,11 @@
 import pandas as pd
 import numpy as np
-from scipy.stats import norm
-
+from hyppo.ksample import MMD
 
 chat_id = 487727948 # Ваш chat ID, не меняйте название переменной
 
-def solution(p: float, x: np.array) -> tuple:
-    # Измените код этой функции
-    # Это будет вашим решением
-    # Не меняйте название функции и её аргументы
-    alpha = 1 - p
-    loc = x.mean() + np.sqrt(3*x.var())
-    scale = np.sqrt(np.var(x)) / np.sqrt(len(x))
-    return loc - scale * norm.ppf(1 - alpha / 2), \
-           loc - scale * norm.ppf(alpha / 2)
+def solution(x: np.array, y: np.array) -> bool:
+    flag = True
+    if MMD(compute_kernel = "rbf", gamma = 0.7).test(x, y)[1] >= 0.03:
+        flag = False
+    return flag # Ваш ответ, True или False
